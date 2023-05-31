@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import Grid, { IGrid } from "./models/grid/grid";
 import {ICell} from "./models/cell/cell";
-import {ConnectToWebSocker, QueryGrid} from "./engine/engine";
+import {ConnectToWebSocker, QueryGrid} from "./api/api";
 
 
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled, { css } from "styled-components";
 import {Cell, ICell} from "../cell/cell"
-import {QueryGrid} from "../../engine/engine";
+import {QueryGrid} from "../../api/api";
 
 export interface IGrid {
     x: number
