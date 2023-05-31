@@ -1,5 +1,5 @@
 import useWebSocket from "react-use-websocket";
-import {ICell} from "../models/cell/cell";
+import {ICell} from "../components/cell/cell";
 
 interface IQueryGridResponse {
     grid: [[ICell]]

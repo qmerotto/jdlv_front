@@ -1,7 +1,9 @@
 import React, { useCallback, useEffect, useState } from "react";
-import Grid, { IGrid } from "./models/grid/grid";
-import {ICell} from "./models/cell/cell";
+import Grid, { IGrid } from "./components/grid/grid";
+import {ICell} from "./components/cell/cell";
 import {ConnectToWebSocker, QueryGrid} from "./api/api";
+import { Controls } from "./components/controls/controls";
+import { GlobalWrapper } from "./components/globalWrapper/globalWrapper";
 
 
 
@@ -11,7 +13,6 @@ const App = (): JSX.Element => {
 
 
 
-    ConnectToWebSocker(setGrid)
     /*useEffect(() => {
         if (running) {
             const id = setInterval(queryGrid, 5000);
@@ -20,7 +21,9 @@ const App = (): JSX.Element => {
     }, [running])*/
 
 
-    return(<>{gridDatas ? <Grid grid={gridDatas} setRunning={setRunning}/>:<>NUL</>}</>)
+    return(
+        <GlobalWrapper />
+    )
 }
 
 export default App

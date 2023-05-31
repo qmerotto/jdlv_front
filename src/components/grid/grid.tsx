@@ -10,8 +10,7 @@ export interface IGrid {
 }
 
 export interface IGridProps {
-    grid: [[ICell]]
-    setRunning: React.Dispatch<React.SetStateAction<boolean>>
+    grid?: [[ICell]]
 }
 
 interface ISGrid {
@@ -27,64 +26,19 @@ const SGrid = styled.div<ISGrid>`
 `;
 
 const Grid = (props: IGridProps): JSX.Element => {
-    const [grid, setGrid] = useState<[[ICell]]>(props.grid)
+    const [grid, setGrid] = useState<[[ICell]]>()
 
     useEffect(() => {
-        setGrid(props.grid);
+        if (props.grid) {
+            setGrid(props.grid);
+        }
     }, [props])
 
     console.log(props.grid)
     console.log(grid)
-    const start = async () => {
-        console.log("start click")
-        const response = await fetch('http://localhost:8080/start',  {
-            headers: {'Origin':'http://localhost:3000'},
-            method: "GET",
-            mode: "cors",
-        });
-        const data = await response.json();
-        if ( data ) {
-            props.setRunning(true)
-            console.log(data)
-        }
-    }
-
-    const stop = async () => {
-        console.log("Stop click")
-        const response = await fetch('http://localhost:8080/stop',  {
-            headers: {'Origin':'http://localhost:3000'},
-            method: "GET",
-            mode: "cors",
-        });
-        const data = await response.json();
-        if ( data ) {
-            props.setRunning(false)
-            console.log(data)
-        }
-    }
-
-    const reset = async () => {
-        await fetch('http://localhost:8080/reinitialize',  {
-            headers: {'Origin':'http://localhost:3000'},
-            method: "GET",
-            mode: "cors",
-        }).then(r => console.log(r));
-
-
-        await QueryGrid().then(
-            (value) => {
-
-                console.log("grid")
-                console.log(value)
-                setGrid(value)
-            }
-        );
-
-    }
 
     return(<>
             {grid ?
-            <>
                 <SGrid $size={grid.length}>
                     {
                         grid.map((line: [ICell], x: number) => {
@@ -98,18 +52,7 @@ const Grid = (props: IGridProps): JSX.Element => {
                         })
                     }
                 </SGrid>
-                <div>
-                    <button onClick={start}>
-                        {"START"}
-                    </button>
-                    <button onClick={stop}>
-                        {"STOP"}
-                    </button>
-                    <button onClick={reset}>
-                        {"RESET"}
-                    </button>
-                </div>
-            </> : <></>
+            : <></>
         }
         </>
     )}
