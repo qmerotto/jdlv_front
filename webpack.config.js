@@ -1,4 +1,5 @@
 const prod = process.env.NODE_ENV === 'production';
+const webpack = require('webpack');
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -31,5 +32,8 @@ module.exports = {
       template: 'index.html',
     }),
     new MiniCssExtractPlugin(),
+    new webpack.ProvidePlugin({
+      Buffer: ['buffer', 'Buffer'],
+    }),
   ],
 };
