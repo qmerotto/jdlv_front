@@ -1,16 +1,11 @@
 import React, { useState, useEffect } from "react";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import {Cell, ICell} from "../cell/cell"
-import {QueryGrid} from "../../api/api";
 
-export interface IGrid {
-    x: number
-    y: number
-    map:   [[ICell]]
-}
 
+export type TGridMap = [[ICell]]
 export interface IGridProps {
-    grid?: [[ICell]]
+    grid?: TGridMap
 }
 
 interface ISGrid {
@@ -34,7 +29,6 @@ const Grid = (props: IGridProps): JSX.Element => {
         }
     }, [props])
 
-    console.log(props.grid)
     console.log(grid)
 
     return(<>

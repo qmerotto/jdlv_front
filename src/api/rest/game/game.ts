@@ -1,20 +1,32 @@
+import { IGame } from "../../../components/game/game";
+import { TGridMap } from "../../../components/grid/grid";
 
-const startGrid = async (id?: string) => {
+interface getWebsocketTokenPayload {
+    token: string
+}
+
+export const getWebsocketToken = async (uuid?: string) => {
     console.log("start click")
-    const response = await fetch(`http://localhost:8080/game/${id}/start`,  {
+   return await fetch(`http://localhost:8080/game/token`,  {
         headers: {'Origin':'http://localhost:3000'},
-        method: "GET",
+        method: "POST",
         mode: "cors",
-    });
-    const data = await response.json();
-    if ( data ) {
-        console.log(data)
-    }
+        body: JSON.stringify({
+            gameUuid: uuid,
+        }),
+    })
+    .then(r => r.json())
+    .then(
+        (payload: getWebsocketTokenPayload) => {
+            console.log(payload)
+            return payload.token
+        }
+    );
 }
 
-const stopGrid = async (id?: string) => {
+export const stopGrid = async (uuid?: string) => {
     console.log("Stop click")
-    const response = await fetch(`http://localhost:8080/game/${id}/stop`,  {
+    const response = await fetch(`http://localhost:8080/game/stop`,  {
         headers: {'Origin':'http://localhost:3000'},
         method: "GET",
         mode: "cors",
@@ -25,11 +37,34 @@ const stopGrid = async (id?: string) => {
     }
 }
 
-const resetGrid = async (id?: string) => {
-    await fetch(`http://localhost:8080/game/${id}/reinitialize`,  {
-        headers: {'Origin':'http://localhost:3000'},
-        method: "GET",
+interface newGamePayload {
+    newGame: {
+        uuid: string
+        x: number,
+        y: number,
+        grid: TGridMap,
+    }
+}
+
+export const newGame = async (x: number, y: number): Promise<IGame> =>  {
+    return await fetch('http://localhost:8080/game/new',  {
+        body: JSON.stringify({
+            x: x,
+            y: y,
+        }),
+        headers: {
+            'Origin':'http://localhost:3000',
+            'Content-Type': 'application/json'
+        },
+        method: "POST",
         mode: "cors",
-    }).then(r => console.log(r));
+    })
+    .then(r => r.json())
+    .then(
+        (payload: newGamePayload) => {
+            console.log(payload)
+            return payload.newGame
+        }
+    )
 
 }

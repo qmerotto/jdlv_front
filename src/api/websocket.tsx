@@ -1,5 +1,7 @@
+import React, { PropsWithChildren } from "react";
 import useWebSocket from "react-use-websocket";
 import {ICell} from "../components/cell/cell";
+import { TGridMap } from "../components/grid/grid";
 
 interface IQueryGridResponse {
     grid: [[ICell]]
@@ -26,9 +28,17 @@ export interface WSMessage {
     payload: any,
 }
 
-export const ConnectToWebSocker = (setGrid: React.Dispatch<React.SetStateAction<[[ICell]] | undefined>>) => {
+export interface ISubscriberProps {
+    token: string,
+    setGrid: (map: TGridMap) => void
+    stop: () => void
+}
+
+const Subscriber = (props: PropsWithChildren<ISubscriberProps>): JSX.Element => {
+    const { children, token, setGrid } = props
     const { sendMessage, lastMessage, readyState, getWebSocket } = useWebSocket("ws://localhost:8080/game/grid", {
         onOpen: () => {
+          sendMessage(token)
           console.log('WebSocket connection established.');
         },
         onMessage: (event: MessageEvent<any>) => {
@@ -38,6 +48,7 @@ export const ConnectToWebSocker = (setGrid: React.Dispatch<React.SetStateAction<
                     switch(r.event) {
                     case WSEvent.GRID_UPDATED.valueOf():
                         console.log(r);
+                        setGrid(r.payload)
                         break;
                     default:
                         console.log("raté " + r.event)
@@ -47,10 +58,11 @@ export const ConnectToWebSocker = (setGrid: React.Dispatch<React.SetStateAction<
         },
         onError: (m: Event) => {
             console.error('WebSocket connection error', m);
+            stop()
         },
       });
 
-    sendMessage("test")
-    //console.log(lastMessage)
+    return (<>{children}</>)
 }
 
+export default Subscriber
