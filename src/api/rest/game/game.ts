@@ -1,6 +1,6 @@
 import { ICell } from "../../../components/cell/cell";
-import { IGame } from "../../../components/game/game";
 import { TGridMap } from "../../../components/grid/grid";
+import { IGame } from "../../../contexts/game";
 
 interface getWebsocketTokenPayload {
     token: string

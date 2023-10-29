@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useContext, useState } from "react";
 import *  as Game  from "../../api/rest/game/game";
-import { TGridMap } from "../grid/grid";
-import { IGame } from "../game/game";
-import Subscriber from "../../api/websocket";
+import { IGame } from "../../contexts/game";
+import { UserNotificationContext } from "../../api/websocket/PubSubContexts";
+import { EventName } from "../../api/websocket/Event.types";
+import { GameContext } from "../../contexts/GameContext";
 
 interface IControlProps {
     callback: TCallbackTypes
@@ -20,53 +21,54 @@ const Control = (props: IControlProps): JSX.Element => {
     )
 }
 
-interface IControlsProps {
-    gameUuid: string
-    updateGame(game: IGame): void
-    updateGridMap(grid: TGridMap): void
-}
 
-export const Controls = (props: IControlsProps): JSX.Element => {
-    const { gameUuid, updateGame, updateGridMap } = props
-    const [gridSize, setGridSize] = useState({x: 10, y: 10})
+export const Controls = (): JSX.Element => {
+    const userNotificationContext = useContext(UserNotificationContext);
+    const gameContext = useContext(GameContext)
 
-    
-    const newGame = () => {
-        Game.newGame(gridSize.x, gridSize.y).then(
-            (game: IGame) =>{
-                updateGame(game)
+    const newGame = async () => {
+        if (!(gameContext?.x && gameContext?.y)) {
+            return
+        }
+
+        userNotificationContext?.publish(EventName.NewGame, {
+            sentAt: new Date(),
+            payload: {
+                x: gameContext.x,
+                y: gameContext.y,
             }
-        )
+        })
     }
     
-    const startGrid = () => {
-        Game.getWebsocketToken(gameUuid).then(
-          (token: string) => {
-            console.log("webosocket token: ", token)
-            if ( token !== "") {
-                setConnectionState({
-                    running: true,
-                    token: token
-                })
+    const startGame = async () => {
+        if (!gameContext?.uuid) {
+            return
+        }
+
+        userNotificationContext?.publish(EventName.GameStarted, {
+            sentAt: new Date(),
+            payload: {
+                gameUuid: gameContext.uuid,
             }
-          }
-        )
+        })
     }
 
-    const stopGrid = () => {
-        Game.stopGrid(gameUuid).then(() => {
-            console.log("stop")
-            setConnectionState({
-                running: false,
-                token: ""
-            })
+    const stopGame = () => {
+        if (!gameContext?.uuid) {
+            return
+        }
+
+        userNotificationContext?.publish(EventName.GameStarted, {
+            sentAt: new Date(),
+            payload: {
+                gameUuid: gameContext.uuid,
             }
-        )
+        })
     }
 
     return(<>
-                <Control label="Start" callback={async () => startGrid()} />
-                <Control label="Stop" callback={async () => stopGrid()} />
+                <Control label="Start" callback={async () => startGame()} />
+                <Control label="Stop" callback={async () => stopGame()} />
                 <Control label="New" callback={async () => newGame()} />
                 <input type="text" /> <input type="text" />
             </>

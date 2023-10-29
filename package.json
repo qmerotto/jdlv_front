@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/qmerotto/jdlv_front#readme",
   "devDependencies": {
+    "@types/phoenix": "^1.6.2",
     "@types/react": "^18.0.25",
     "@types/react-dom": "^18.0.9",
     "@types/styled-components": "^5.1.26",
@@ -40,6 +41,7 @@
   },
   "dependencies": {
     "buffer": "^6.0.3",
+    "phoenix": "^1.7.9",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-use-websocket": "^4.3.1",

@@ -1,8 +1,7 @@
 import React, {useContext, useEffect, useState} from "react";
 import styled, { css } from "styled-components";
 import { setCellAlive } from "../../api/rest/game/game";
-import { UserContext, GameContext } from "../globalWrapper/globalWrapper";
-
+import { GameContext } from "../../contexts/GameContext";
 
 
 interface ISCell {
