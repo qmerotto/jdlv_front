@@ -36,10 +36,16 @@ export interface ISubscriberProps {
 
 const Subscriber = (props: PropsWithChildren<ISubscriberProps>): JSX.Element => {
     const { children, token, setGrid } = props
+    console.log("init subscriber")
     const { sendMessage, lastMessage, readyState, getWebSocket } = useWebSocket("ws://localhost:8080/game/grid", {
         onOpen: () => {
-          sendMessage(token)
-          console.log('WebSocket connection established.');
+            console.log('sending message', JSON.stringify({
+                token: token,
+                }));
+            sendMessage(JSON.stringify({
+                token: token,
+                }))
+            console.log('WebSocket connection established.');
         },
         onMessage: (event: MessageEvent<any>) => {
             Promise.resolve(event?.data.text()).then(

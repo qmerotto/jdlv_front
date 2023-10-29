@@ -1,7 +1,5 @@
-import React, { useState } from "react";
-import {ICell} from "./components/cell/cell";
+import React from "react";
 import { GlobalWrapper } from "./components/globalWrapper/globalWrapper";
-
 
 
 const App = (): JSX.Element => {

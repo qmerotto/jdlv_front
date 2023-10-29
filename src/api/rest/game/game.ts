@@ -1,3 +1,4 @@
+import { ICell } from "../../../components/cell/cell";
 import { IGame } from "../../../components/game/game";
 import { TGridMap } from "../../../components/grid/grid";
 
@@ -37,16 +38,19 @@ export const stopGrid = async (uuid?: string) => {
     }
 }
 
+export interface newGame {
+    uuid: string
+    x: number,
+    y: number,
+    grid: TGridMap,
+}
+
 interface newGamePayload {
-    newGame: {
-        uuid: string
-        x: number,
-        y: number,
-        grid: TGridMap,
-    }
+    newGame: newGame
 }
 
 export const newGame = async (x: number, y: number): Promise<IGame> =>  {
+
     return await fetch('http://localhost:8080/game/new',  {
         body: JSON.stringify({
             x: x,
@@ -67,4 +71,27 @@ export const newGame = async (x: number, y: number): Promise<IGame> =>  {
         }
     )
 
+}
+
+
+export const setCellAlive = async (x: number, y: number, gameUuid?: string): Promise<ICell> =>  {
+    return await fetch('http://localhost:8080/game/jdlv/cell',  {
+        body: JSON.stringify({
+            gameUuid: gameUuid,
+            x: x,
+            y: y,
+        }),
+        headers: {
+            'Origin':'http://localhost:3000',
+            'Content-Type': 'application/json'
+        },
+        method: "POST",
+        mode: "cors",
+    })
+    .then(r => r.json())
+    .then(
+        (payload: ICell) => {
+            return payload
+        }
+    )
 }

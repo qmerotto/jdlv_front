@@ -1,5 +1,7 @@
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import styled, { css } from "styled-components";
+import { setCellAlive } from "../../api/rest/game/game";
+import { UserContext, GameContext } from "../globalWrapper/globalWrapper";
 
 
 
@@ -33,35 +35,17 @@ export interface ICellProps {
 
 export const Cell = (props: ICellProps): JSX.Element => {
     const [cell, setCell] = useState<ICell>(props.cell)
-
+    const gameContext = useContext(GameContext)
     useEffect(() => {
         setCell(props.cell);
     }, [props])
 
     const setAlive = async (x: number, y: number) => {
-        console.log("set alive")
-        const response = await fetch('http://localhost:8080/set_cells',  {
-            headers: {'Origin':'http://localhost:3000'},
-            method: "POST",
-            mode: "cors",
-            body:  JSON.stringify({
-                "cells": [{x: x, y: y}]
-            })
-        });
-        const data = await response.json();
-        if ( data ) {
-            console.log(data)
-            setCell({
-                x: cell.x,
-                y: cell.y,
-                state: {
-                    alive: true,
-                    fuel: cell.state.fuel,
-                    temperature: cell.state.temperature
-                }
-            })
-        }
+        console.log("set alive: ", cell.x, cell.y, gameContext?.uuid)
+        const updatedCell = await setCellAlive(cell.x, cell.y, gameContext?.uuid)
+        setCell(updatedCell)
     }
+
     if (cell.state.alive) {
         console.log(`x: ${cell.x} y: ${cell.y}`)
     }

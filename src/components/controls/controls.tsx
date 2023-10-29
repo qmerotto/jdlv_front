@@ -26,16 +26,11 @@ interface IControlsProps {
     updateGridMap(grid: TGridMap): void
 }
 
-interface IConnectionState {
-    running: boolean
-    token: string
-}
-
 export const Controls = (props: IControlsProps): JSX.Element => {
     const { gameUuid, updateGame, updateGridMap } = props
     const [gridSize, setGridSize] = useState({x: 10, y: 10})
-    const [connectionState, setConnectionState] = useState<IConnectionState>({running: false, token: ""})
 
+    
     const newGame = () => {
         Game.newGame(gridSize.x, gridSize.y).then(
             (game: IGame) =>{
@@ -45,7 +40,7 @@ export const Controls = (props: IControlsProps): JSX.Element => {
     }
     
     const startGrid = () => {
-        Game.getWebsocketToken(props.gameUuid).then(
+        Game.getWebsocketToken(gameUuid).then(
           (token: string) => {
             console.log("webosocket token: ", token)
             if ( token !== "") {
@@ -59,7 +54,7 @@ export const Controls = (props: IControlsProps): JSX.Element => {
     }
 
     const stopGrid = () => {
-        Game.stopGrid(props.gameUuid).then(() => {
+        Game.stopGrid(gameUuid).then(() => {
             console.log("stop")
             setConnectionState({
                 running: false,
@@ -69,20 +64,11 @@ export const Controls = (props: IControlsProps): JSX.Element => {
         )
     }
 
-    return(
-        connectionState.running ? 
-            <Subscriber token={connectionState.token} setGrid={updateGridMap} stop={stopGrid}>
+    return(<>
                 <Control label="Start" callback={async () => startGrid()} />
                 <Control label="Stop" callback={async () => stopGrid()} />
                 <Control label="New" callback={async () => newGame()} />
                 <input type="text" /> <input type="text" />
-            </Subscriber> : 
-        
-            <>
-                <Control label="Start" callback={async () => startGrid()} />
-                <Control label="Stop" callback={async () => stopGrid()} />
-                <Control label="New" callback={async () => newGame()} />
-                <input type="text" /> <input type="text" />
-            </>  
+            </>
     )
 }
